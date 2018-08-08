@@ -1,0 +1,16 @@
+{
+    "name": "namet/oss",
+    "description": "oss integrated from oss/cos/nos etc.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "nameT",
+            "email": "namet117@163.com"
+        }
+    ],
+    "require": {
+        "php": ">= 5.3",
+        "aliyuncs/oss-sdk-php": "^2"
+    }
+}
