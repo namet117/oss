@@ -9,8 +9,16 @@
             "email": "namet117@163.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Namet\\Oss\\": "src/"
+        }
+    },
     "require": {
         "php": ">= 5.3",
-        "aliyuncs/oss-sdk-php": "^2"
+        "aliyuncs/oss-sdk-php": "^2",
+        "netease/nos-php-sdk": "^1.0",
+        "yunify/qingstor-sdk": "^2.2",
+        "qcloud/cos-sdk-v5": "^1.2"
     }
 }
