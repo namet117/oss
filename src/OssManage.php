@@ -7,7 +7,7 @@
 namespace Namet\Oss;
 
 
-class Oss
+class OssManage
 {
 
 }
