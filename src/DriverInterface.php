@@ -12,9 +12,9 @@ interface DriverInterface
 
     public function close();
 
-    public function put($file, $content);
-
-    public function add($file, $content);
+//    public function put($file, $content);
+//
+//    public function add($file, $content);
 
     public function exists($file);
 
@@ -34,15 +34,15 @@ interface DriverInterface
 
     public function copy($old, $new);
 
-    public function setPublic($file);
-
-    public function setPrivate($file);
-
-    public function files($directory);
-
-    public function allFiles($directory);
-
-    public function directories($directory);
-
-    public function allDirectories($directory);
+//    public function setPublic($file);
+//
+//    public function setPrivate($file);
+//
+//    public function files($directory);
+//
+//    public function allFiles($directory);
+//
+//    public function directories($directory);
+//
+//    public function allDirectories($directory);
 }

@@ -8,5 +8,20 @@ namespace Namet\Oss;
 
 abstract class DriverBase
 {
+    private $_isReady = false;
 
+    public function __construct()
+    {
+
+    }
+
+    public function isReady()
+    {
+        return $this->_isReady;
+    }
+
+    public function init($config = array())
+    {
+        $this->_isReady = true;
+    }
 }
