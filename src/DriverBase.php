@@ -6,22 +6,36 @@
 
 namespace Namet\Oss;
 
+use Namet\Oss\OssException;
+
 abstract class DriverBase
 {
-    private $_isReady = false;
+    /**
+     * 连接信息
+     */
+    protected $_connection = null;
+
+    protected $_config = array();
 
     public function __construct()
     {
 
     }
 
-    public function isReady()
-    {
-        return $this->_isReady;
-    }
-
     public function init($config = array())
     {
         $this->_isReady = true;
+    }
+
+    /**
+     * 抛出异常
+     *
+     * @param \Exception $e
+     *
+     * @throws \Namet\Oss\OssException
+     */
+    protected function throwException(\Exception $e)
+    {
+        throw new OssException($e);
     }
 }

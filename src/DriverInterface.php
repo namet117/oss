@@ -30,9 +30,9 @@ interface DriverInterface
 
     public function putFile($file, $resource);
 
-    public function move($old, $new);
+//    public function move($old, $new);
 
-    public function copy($old, $new);
+//    public function copy($old, $new);
 
 //    public function setPublic($file);
 //
