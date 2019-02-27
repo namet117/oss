@@ -38,4 +38,9 @@ abstract class DriverBase
     {
         throw new OssException($e);
     }
+
+    protected function checkLocalFile($file)
+    {
+        
+    }
 }

@@ -8,12 +8,12 @@ namespace Namet\Oss;
 
 interface DriverInterface
 {
-    public function connect($config = array());
+    public function connect();
 
     public function close();
 
 //    public function put($file, $content);
-//
+
 //    public function add($file, $content);
 
     public function exists($file);
