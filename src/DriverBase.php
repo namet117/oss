@@ -6,18 +6,22 @@
 
 namespace Namet\Oss;
 
-use Namet\Oss\OssException;
-
-abstract class DriverBase
+abstract class DriverBase implements DriverInterface
 {
     /**
      * 连接信息
      */
-    protected $_connection = null;
+//    protected $connection = null;
 
-    protected $_config = array();
+    protected $_config;
 
-    public function __construct()
+    public function __construct($config)
+    {
+        $this->_config = json_decode(json_encode($config));
+        $this->connection();
+    }
+
+    protected function config()
     {
 
     }
@@ -41,6 +45,6 @@ abstract class DriverBase
 
     protected function checkLocalFile($file)
     {
-        
+
     }
 }

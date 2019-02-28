@@ -6,9 +6,6 @@
 
 namespace Namet\Oss;
 
-
-use Namet\Oss\OssException\OssException;
-
 class OssManage
 {
     /**
@@ -151,7 +148,7 @@ class OssManage
      * @param string $msg  错误信息
      * @param int    $code 错误码
      *
-     * @throws \Namet\Oss\OssException\OssException
+     * @throws \Namet\Oss\OssException
      */
     private function _throws($msg, $code = 0)
     {

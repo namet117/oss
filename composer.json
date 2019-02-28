@@ -19,6 +19,7 @@
         "aliyuncs/oss-sdk-php": "^2",
         "netease/nos-php-sdk": "^1.0",
         "yunify/qingstor-sdk": "^2.2",
-        "qcloud/cos-sdk-v5": "^1.2"
+        "qcloud/cos-sdk-v5": "^1.2",
+        "ext-json": "*"
     }
 }
