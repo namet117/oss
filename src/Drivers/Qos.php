@@ -10,7 +10,7 @@ namespace Namet\Oss\Drivers;
 use Namet\Oss\DriverBase;
 use Namet\Oss\DriverInterface;
 
-class Qos extends DriverBase implements DriverInterface
+class Qos extends DriverBase
 {
 
 }

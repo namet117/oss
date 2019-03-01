@@ -13,38 +13,70 @@ abstract class DriverBase implements DriverInterface
      */
 //    protected $connection = null;
 
-    protected $_config;
+    protected $_config = array();
 
+    /**
+     * DriverBase constructor.
+     *
+     * @param $config
+     *
+     * @throws \Namet\Oss\OssException
+     */
     public function __construct($config)
     {
         $this->_config = json_decode(json_encode($config));
-        $this->connection();
+        $this->_checkConfig();
+        $this->connect();
     }
 
-    protected function config()
+    /**
+     * 检查配置文件
+     * @throws \Namet\Oss\OssException
+     */
+    protected function _checkConfig()
     {
-
+        $keys = array('key_id', 'secret', 'bucket');
+        foreach ($keys as $key) {
+            if (empty($this->_config()->$key)) {
+                $this->_throw("配置中字段「{$key}」不可为空");
+            }
+        }
     }
 
-    public function init($config = array())
+    /**
+     * 获取配置文件
+     *
+     * @return \stdClass
+     */
+    protected function _config()
     {
-        $this->_isReady = true;
+        return $this->_config;
     }
 
     /**
      * 抛出异常
      *
-     * @param \Exception $e
+     * @param mixed $e
      *
      * @throws \Namet\Oss\OssException
      */
-    protected function throwException(\Exception $e)
+    protected function _throw($e)
     {
         throw new OssException($e);
     }
 
-    protected function checkLocalFile($file)
+    /**
+     * 检查本地文件是否存在
+     *
+     * @param string $file 文件名
+     *
+     * @throws \Namet\Oss\OssException
+     */
+    protected function _checkLocalFile($file)
     {
-
+        if (!file_exists($file)) {
+            $this->_throw("本地文件{$file}不存在");
+        }
+        // TODO 还需要检查文件大小是否已经超过5G
     }
 }
