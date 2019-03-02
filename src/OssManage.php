@@ -6,6 +6,18 @@
 
 namespace Namet\Oss;
 
+/**
+ * Class OssManage
+ *
+ * @package Namet\Oss
+ *
+ * @method bool upload(string $file, string $org)  上传文件
+ * @method bool exists(string $file) 检查文件是否存在
+ * @method bool delete(string $file) 删除文件
+ * @method bool url(string $file) 获取文件地址
+ * @method bool move(string $old, string $new) 移动文件
+ * @method bool copy(string $old, string $new) 拷贝文件
+ */
 class OssManage
 {
     /**
@@ -29,23 +41,16 @@ class OssManage
 
     /**
      * 当前OSS驱动实例
-     * @var object
+     * @var null|\Namet\Oss\DriverInterface
      */
-    private $_oss;
-
-    /**
-     * 驱动配置文件
-     * @var array
-     */
-    private $_config = array();
+    private $_oss = null;
 
     /**
      * 允许通过魔术方法调用的方法列表
      * @var array
      */
-    private $_allowed_functions = array(
-        'exists', 'put', 'add', 'delete', 'url', 'size', 'lastModified', 'putFile', 'move', 'copy', 'setPublic',
-        'setPrivate', 'files', 'allFiles', 'directories', 'allDirectories'
+    private $_allowed = array(
+        'upload', 'exists', 'delete', 'url', 'move', 'copy',
     );
 
     /**
@@ -54,7 +59,7 @@ class OssManage
      * @param string $driver 驱动名称，可选值：oss/bos/cos/nos/qos/oos/ufile
      * @param array  $config 配置信息
      *
-     * @throws \Namet\Oss\OssException\OssException
+     * @throws \Namet\Oss\OssException
      */
     public function __construct($driver = '', $config = array())
     {
@@ -68,10 +73,12 @@ class OssManage
      * @param $config
      *
      * @return $this
+     * @throws \Namet\Oss\OssException
      */
     public function config($config)
     {
-        $this->_config =$config;
+        $this->_checkIsReady();
+        $this->_oss->setConfig($config);
 
         return $this;
     }
@@ -82,7 +89,7 @@ class OssManage
      * @param $name
      *
      * @return $this
-     * @throws \Namet\Oss\OssException\OssException
+     * @throws \Namet\Oss\OssException
      */
     public function driver($name)
     {
@@ -106,7 +113,7 @@ class OssManage
      * @param mixed  $class 驱动类
      *
      * @return $this
-     * @throws \Namet\Oss\OssException\OssException
+     * @throws \Namet\Oss\OssException
      */
     public function extend($name, $class)
     {
@@ -128,16 +135,15 @@ class OssManage
      * @param $arguments
      *
      * @return mixed
-     * @throws \Namet\Oss\OssException\OssException
+     * @throws \Namet\Oss\OssException
      */
     public function __call($name, $arguments)
     {
-        if (!in_array($name, $this->_allowed_functions)) {
+        if (!in_array($name, $this->_allowed)) {
             $this->_throws("不存在的方法：{$name}！");
         }
-        if (!$this->_oss->isReady()) {
-            $this->_oss->init($this->_config);
-        }
+
+        $this->_checkIsReady();
 
         return call_user_func_array(array($this->_oss, $name), $arguments);
     }
@@ -153,5 +159,19 @@ class OssManage
     private function _throws($msg, $code = 0)
     {
         throw new OssException($msg, $code);
+    }
+
+    /**
+     * 判断是否驱动已设置
+     *
+     * @return bool
+     * @throws \Namet\Oss\OssException
+     */
+    private function _checkIsReady()
+    {
+        if (empty($this->_oss)) {
+            $this->_throws('请先设置驱动！');
+        }
+        return true;
     }
 }

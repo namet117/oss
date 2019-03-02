@@ -25,6 +25,24 @@ class Oss extends DriverBase
     private $_bucket = '';
 
     /**
+     * 统一调用方法
+     *
+     * @param $function
+     * @param $args
+     *
+     * @return mixed
+     * @throws \Namet\Oss\OssException
+     */
+    public function invoke($function, $args)
+    {
+        try {
+            return parent::invoke($function, $args);
+        } catch (OssException $e) {
+            $this->_throw($e);
+        }
+    }
+
+    /**
      * 连接
      *
      * @param array $config
@@ -45,24 +63,11 @@ class Oss extends DriverBase
         }
     }
 
-    public function close()
-    {
-        $this->_connection = null;
-    }
-
-    /**
-     * 上传单个文件到OSS
-     *
-     * @param string $file 目标地址
-     * @param string $org 原文件地址
-     *
-     * @throws \Namet\Oss\OssException
-     * @throws \OSS\Core\OssException
-     */
     public function upload($file, $org)
     {
         $this->_checkLocalFile($org);
         $this->_connection->uploadFile($this->_bucket, $file, $org);
+        return true;
     }
 
     public function exists($file)
@@ -76,9 +81,22 @@ class Oss extends DriverBase
         $this->_connection->deleteObjects($this->_bucket, $files);
     }
 
-    public function url($file);
+    public function url($file)
+    {
+        $separate = preg_match('/^\//', $file) ? '' : '/';
+        $config = $this->_config();
+        $url = !empty($config->cname) ? $config->cname : "https://{$config->bucket}.{$config->endpoint}";
+        return "{$url}{$separate}{$file}";
+    }
 
-    public function size($file);
+    public function move($old, $new)
+    {
+        $this->copy($old, $new);
+        $this->delete($old);
+    }
 
-    public function lastModified($file);
+    public function copy($old, $new)
+    {
+        $this->_connection->copyObject($this->_bucket, $old, $this->_bucket, $new);
+    }
 }

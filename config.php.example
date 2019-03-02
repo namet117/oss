@@ -2,10 +2,10 @@
 
 return array(
     'oss' => array(
-        'appid' => '',
+        'key_id' => '',
         'secret' => '',
         'bucket' => '',
         'endpoint' => '',
-        'custom' => '',
+        'cname' => '',
     ),
 );

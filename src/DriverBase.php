@@ -16,20 +16,6 @@ abstract class DriverBase implements DriverInterface
     protected $_config = array();
 
     /**
-     * DriverBase constructor.
-     *
-     * @param $config
-     *
-     * @throws \Namet\Oss\OssException
-     */
-    public function __construct($config)
-    {
-        $this->_config = json_decode(json_encode($config));
-        $this->_checkConfig();
-        $this->connect();
-    }
-
-    /**
      * 检查配置文件
      * @throws \Namet\Oss\OssException
      */
@@ -51,6 +37,25 @@ abstract class DriverBase implements DriverInterface
     protected function _config()
     {
         return $this->_config;
+    }
+
+    /**
+     * 设置配置信息
+     *
+     * @param $config
+     *
+     * @throws \Namet\Oss\OssException
+     */
+    public function setConfig($config)
+    {
+        $this->_config = json_decode(json_encode($config));
+        $this->_checkConfig();
+        $this->connect();
+    }
+
+    public function invoke($function, $args)
+    {
+        return call_user_func_array(array($this, $function), $args);
     }
 
     /**

@@ -6,11 +6,16 @@
 
 namespace Namet\Oss;
 
+/**
+ * Interface DriverInterface
+ *
+ * @package Namet\Oss
+ *
+ * @method bool setConfig(array $config) 设置配置
+ */
 interface DriverInterface
 {
     public function connect();
-
-    public function close();
 
     public function upload($file, $resource);
 
@@ -20,13 +25,15 @@ interface DriverInterface
 
     public function url($file);
 
-    public function size($file);
+    public function move($old, $new);
 
-    public function lastModified($file);
+    public function copy($old, $new);
 
-//    public function move($old, $new);
+//    public function close();
 
-//    public function copy($old, $new);
+//    public function size($file);
+
+//    public function lastModified($file);
 
 //    public function setPublic($file);
 
