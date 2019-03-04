@@ -166,4 +166,44 @@ class Oss extends DriverBase
             $this->_throw($e);
         }
     }
+
+    public function read($path)
+    {
+        // TODO: Implement read() method.
+    }
+
+    public function readStream($path)
+    {
+        // TODO: Implement readStream() method.
+    }
+
+    public function getSize($path)
+    {
+        // TODO: Implement getSize() method.
+    }
+
+    public function getTimestamp($path)
+    {
+        // TODO: Implement getTimestamp() method.
+    }
+
+    public function getMetadata($path)
+    {
+        // TODO: Implement getMetadata() method.
+    }
+
+    public function getMimetype($path)
+    {
+        // TODO: Implement getMimetype() method.
+    }
+
+    public function getVisibility($path)
+    {
+        // TODO: Implement getVisibility() method.
+    }
+
+    public function listContents($directory = '', $recursive = false)
+    {
+        // TODO: Implement listContents() method.
+    }
 }

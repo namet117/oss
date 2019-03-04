@@ -135,9 +135,8 @@ class OssManage
 
     private function _getDriverInstance($config = [])
     {
+        $old_config = json_encode(empty($this->_driverConfig) ? [] : $this->_driverConfig);
 
-        var_dump($this->_driver);
-//        $old_config = json_encode(empty($this->_driverConfig) ? [] : $this->_driverConfig);
 //        if (!isset(self::$_drivers[$name])) {
 //            $this->_throws('不存在的驱动：' . $name);
 //        }
@@ -176,8 +175,13 @@ class OssManage
         if (empty($this->_driver)) {
             $this->_throws('请先设置驱动！');
         }
+        $driver_name = is_string($this->_driver)
+            ? $this->_driver
+            : array_search(get_class($this->_driver), self::$_drivers);
 
-        if (empty($this->))
+        if ($all && empty($this->_driverConfig[$driver_name])) {
+            $this->_throws('请传入驱动配置！');
+        }
         return true;
     }
 }
