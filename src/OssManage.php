@@ -90,6 +90,9 @@ class OssManage
      */
     public function driver($name)
     {
+        if (!isset(self::$_drivers[$name])) {
+            $this->_throw("驱动：{$name} 不存在！");
+        }
         $this->_driver = $name;
 
         return $this;
@@ -130,23 +133,32 @@ class OssManage
     {
         $this->_checkIsReady(true);
 
-        return call_user_func_array(array($this->_driver, $name), $arguments);
+        return call_user_func_array([$this->_driver, $name], $arguments);
     }
 
+    /**
+     * 获取Driver实例
+     *
+     * @param array $config 配置信息
+     *
+     * @return void
+     * @throws Namet\Oss\OssException
+     */ 
     private function _getDriverInstance($config = [])
     {
+        // 获取驱动名称
+        $driver_name = is_string($this->_driver) ? $this->_driver : array_search(get_class($this->_driver), self::$_drivers);
+        // 获取已经存在的配置信息
         $old_config = json_encode(empty($this->_driverConfig) ? [] : $this->_driverConfig);
+        // 排序配置信息
+        ksort($config);
+        if (!isset(self::$_instance[$driver_name]) || json_encode($config) != json_encode($old_config)) {
+            $instance = new self::$_drivers[$driver_name]($config);
+            self::$_instance[$driver_name] = $instance;
+        }
 
-//        if (!isset(self::$_drivers[$name])) {
-//            $this->_throws('不存在的驱动：' . $name);
-//        }
-//
-//        if (!isset(self::$_instance[$name])) {
-//            self::$_instance[$name] = new self::$_drivers[$name];
-//        }
-//
-//        $this->_driver = self::$_instance[$name];
-//        $this->_driverConfig[$this->_driver] = $config;
+        $this->_driver = self::$_instance[$driver_name];
+        $this->_driverConfig[$driver_name] = $config;
     }
 
     /**
@@ -170,7 +182,7 @@ class OssManage
      * @return bool
      * @throws \Namet\Oss\OssException
      */
-    private function _checkIsReady($all = true)
+    private function _checkIsReady($all = false)
     {
         if (empty($this->_driver)) {
             $this->_throws('请先设置驱动！');

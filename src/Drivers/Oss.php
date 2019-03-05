@@ -169,7 +169,11 @@ class Oss extends DriverBase
 
     public function read($path)
     {
-        // TODO: Implement read() method.
+        try {
+            $this->_connection->getObject($this->_bucket, $path);
+        } catch (OssException $e) {
+            $this->_throw($e);
+        }
     }
 
     public function readStream($path)

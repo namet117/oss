@@ -9,12 +9,13 @@ $config = $configs[$driver];
 
 try {
     $instance = new \Namet\Oss\OssManage($driver, $config);
-    $dist = 'test/readme.md';
-    $instance->upload($dist, './README.md');
-    $url = $instance->url($dist);
+    $dist = 'test/readme' . time() . '.md';
+    $instance->write($dist, './README.md');
+    $url = $instance->getUrl($dist);
 
     echo "{$url} \n";
 } catch (\Namet\Oss\OssException $e) {
-    echo "error \n";
-    echo $e->getMessage();
+    echo "error: ";
+    echo $e->getMessage(), "\n";
+    echo $e->getFile(), ': ', $e->getLine(), "\n";
 }
