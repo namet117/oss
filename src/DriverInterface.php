@@ -15,5 +15,11 @@ use League\Flysystem\AdapterInterface;
  */
 interface DriverInterface extends AdapterInterface
 {
+    /**
+     * 获取文件地址
+     *
+     * @param  string $path 文件路径
+     * @return string
+     */
     public function getUrl($path);
 }

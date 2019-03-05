@@ -6,17 +6,15 @@
 
 namespace Namet\Oss;
 
+use League\Flysystem\Config;
+
 /**
  * Class OssManage
  *
  * @package Namet\Oss
  *
- * @method bool upload(string $file, string $org)  上传文件
- * @method bool exists(string $file) 检查文件是否存在
- * @method bool delete(string $file) 删除文件
- * @method bool url(string $file) 获取文件地址
- * @method bool move(string $old, string $new) 移动文件
- * @method bool copy(string $old, string $new) 拷贝文件
+ * @method string getUrl(string $path) 获取文件链接
+ * @method string writeStream(string $path, resource $resource) 将文件流上传到OSS中
  */
 class OssManage
 {
@@ -133,6 +131,12 @@ class OssManage
     {
         $this->_checkIsReady(true);
 
+        // var_dump(get_class($this->_driver));
+        // var_dump();
+        // exit;
+
+        $config = new Config($this->_getDriverConfig());
+        $arguments[] = $config;
         return call_user_func_array([$this->_driver, $name], $arguments);
     }
 
@@ -143,11 +147,11 @@ class OssManage
      *
      * @return void
      * @throws Namet\Oss\OssException
-     */ 
+     */
     private function _getDriverInstance($config = [])
     {
         // 获取驱动名称
-        $driver_name = is_string($this->_driver) ? $this->_driver : array_search(get_class($this->_driver), self::$_drivers);
+        $driver_name = $this->_getDriverName();
         // 获取已经存在的配置信息
         $old_config = json_encode(empty($this->_driverConfig) ? [] : $this->_driverConfig);
         // 排序配置信息
@@ -187,13 +191,33 @@ class OssManage
         if (empty($this->_driver)) {
             $this->_throws('请先设置驱动！');
         }
-        $driver_name = is_string($this->_driver)
-            ? $this->_driver
-            : array_search(get_class($this->_driver), self::$_drivers);
+        $driver_name = $this->_getDriverName();
 
-        if ($all && empty($this->_driverConfig[$driver_name])) {
+        if ($all && !is_object($this->_driver) && empty($this->_driverConfig[$driver_name])) {
             $this->_throws('请传入驱动配置！');
         }
         return true;
+    }
+
+    /**
+     * 获取驱动名称
+     *
+     * @return string
+     */
+    private function _getDriverName()
+    {
+        return is_string($this->_driver)
+            ? $this->_driver
+            : array_search('\\' . get_class($this->_driver), self::$_drivers);
+    }
+
+    /**
+     * 获取当前驱动的配置文件
+     *
+     * @return array
+     */
+    private function _getDriverConfig()
+    {
+        return $this->_driverConfig[$this->_getDriverName()];
     }
 }
