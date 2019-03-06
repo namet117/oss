@@ -24,6 +24,8 @@ abstract class DriverBase implements DriverInterface
      */
     protected $_fieldsInConfigToCheck = ['key_id', 'secret', 'bucket'];
 
+    protected $_orgResponse = [];
+
     /**
      * DriverBase constructor.
      *

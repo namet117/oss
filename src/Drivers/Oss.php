@@ -64,7 +64,8 @@ class Oss extends DriverBase
     public function write($path, $content, Config $config)
     {
         try {
-            $this->_connection->uploadFile($this->_bucket, $path, $content);
+            $result = $this->_connection->uploadFile($this->_bucket, $path, $content);
+            return empty($result['info']) ? true : $result['info'];
         } catch (OssException $e) {
             $this->_throw($e);
         }
@@ -88,7 +89,8 @@ class Oss extends DriverBase
     public function delete($path)
     {
         try {
-            return $this->_connection->deleteObject($this->_bucket, $path);
+            $this->_connection->deleteObject($this->_bucket, $path);
+            return true;
         } catch (OssException $e) {
             $this->_throw($e);
         }
@@ -106,12 +108,14 @@ class Oss extends DriverBase
     {
         $this->copy($old, $new);
         $this->delete($old);
+        return true;
     }
 
     public function copy($old, $new)
     {
         try {
-            return $this->_connection->copyObject($this->_bucket, $old, $this->_bucket, $new);
+            $this->_connection->copyObject($this->_bucket, $old, $this->_bucket, $new);
+            return true;
         } catch (OssException $e) {
             $this->_throw($e);
         }
@@ -126,7 +130,8 @@ class Oss extends DriverBase
      */
     public function deleteDir($dirname)
     {
-        return $this->delete($dirname);
+        $this->delete($dirname);
+        return true;
     }
 
     /**
@@ -161,7 +166,8 @@ class Oss extends DriverBase
         }
 
         try {
-            return $this->_connection->putObjectAcl($this->_bucket, $path, $visibility);
+            $this->_connection->putObjectAcl($this->_bucket, $path, $visibility);
+            return true;
         } catch (OssException $e) {
             $this->_throw($e);
         }
@@ -170,7 +176,7 @@ class Oss extends DriverBase
     public function read($path)
     {
         try {
-            $this->_connection->getObject($this->_bucket, $path);
+            return $this->_connection->getObject($this->_bucket, $path);
         } catch (OssException $e) {
             $this->_throw($e);
         }

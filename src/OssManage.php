@@ -14,7 +14,17 @@ use League\Flysystem\Config;
  * @package Namet\Oss
  *
  * @method string getUrl(string $path) 获取文件链接
- * @method string writeStream(string $path, resource $resource) 将文件流上传到OSS中
+ * @method true|array writeStream(string $path, resource $resource) 将文件流上传到OSS中
+ * @method true|array write(string $path, resource $resource) 将文件上传到OSS中
+ * @method true|array updateStream(string $path, resource $resource) 将文件流更新到OSS中去
+ * @method true|array update(string $path, resource $resource) 将文件更新到OSS中去
+ * @method bool has(string $path) 判断文件是否存在
+ * @method bool delete(string $path) 删除文件
+ * @method bool rename(string $path, string $new_path) 重命名文件
+ * @method bool copy(string $path, string $new_path) 拷贝文件
+ * @method bool deleteDir(string $path) 删除文件夹
+ * @method bool setVisibility(string $path, string $visibility = 'public') 设置文件权限
+ * @method string read(string $path) 读取文件内容到内存中
  */
 class OssManage
 {
