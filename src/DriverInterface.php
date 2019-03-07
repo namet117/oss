@@ -22,4 +22,13 @@ interface DriverInterface extends AdapterInterface
      * @return string
      */
     public function getUrl($path);
+
+    /**
+     * 上传本地文件
+     *
+     * @param  string $path  [description]
+     * @param  string $local [description]
+     * @return array
+     */
+    public function upload($path, $local);
 }

@@ -14,6 +14,7 @@ use League\Flysystem\Config;
  * @package Namet\Oss
  *
  * @method string getUrl(string $path) 获取文件链接
+ * @method bool upload(string $path, string $local) 上传本地文件
  * @method true|array writeStream(string $path, resource $resource) 将文件流上传到OSS中
  * @method true|array write(string $path, resource $resource) 将文件上传到OSS中
  * @method true|array updateStream(string $path, resource $resource) 将文件流更新到OSS中去

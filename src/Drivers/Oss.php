@@ -54,6 +54,16 @@ class Oss extends DriverBase
         }
     }
 
+    public function upload($path, $local)
+    {
+        try {
+            $result = $this->_connection->uploadFile($this->_bucket, $path, $content);
+            return empty($result['info']) ? true : $result['info'];
+        } catch (OssException $e) {
+            $this->_throw($e);
+        }
+    }
+
     public function writeStream($path, $resource, Config $config)
     {
         $content = stream_get_contents($resource);
@@ -64,12 +74,11 @@ class Oss extends DriverBase
     public function write($path, $content, Config $config)
     {
         try {
-            $result = $this->_connection->uploadFile($this->_bucket, $path, $content);
+            $result = $this->_connection->putObject($this->_bucket, $path, $content);
             return empty($result['info']) ? true : $result['info'];
         } catch (OssException $e) {
             $this->_throw($e);
         }
-        return true;
     }
     public function updateStream($path, $resource, Config $config)
     {

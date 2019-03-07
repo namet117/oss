@@ -1,11 +1,11 @@
 <?php
 
-return array(
-    'oss' => array(
+return [
+    'oss' => [
         'key_id' => '',
         'secret' => '',
         'bucket' => '',
         'endpoint' => '',
         'cname' => '',
-    ),
-);
+    ],
+];
