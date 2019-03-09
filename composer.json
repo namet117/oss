@@ -16,11 +16,8 @@
     },
     "require": {
         "php": ">= 5.5.9",
-        "aliyuncs/oss-sdk-php": "^2",
-        "netease/nos-php-sdk": "^1.0",
-        "yunify/qingstor-sdk": "^2.2",
-        "qcloud/cos-sdk-v5": "^1.2",
         "ext-json": "*",
-        "league/flysystem": "^1.0"
+        "league/flysystem": "^1.0",
+        "aliyuncs/oss-sdk-php": "^2"
     }
 }
