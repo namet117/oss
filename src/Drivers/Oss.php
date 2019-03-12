@@ -57,7 +57,7 @@ class Oss extends DriverBase
     public function upload($path, $local)
     {
         try {
-            $result = $this->_connection->uploadFile($this->_bucket, $path, $content);
+            $result = $this->_connection->uploadFile($this->_bucket, $path, $local);
             return empty($result['info']) ? true : $result['info'];
         } catch (OssException $e) {
             $this->_throw($e);
