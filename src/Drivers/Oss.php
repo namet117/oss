@@ -109,7 +109,10 @@ class Oss extends DriverBase
     {
         $separate = preg_match('/^\//', $path) ? '' : '/';
         $config = $this->_config();
-        $url = !empty($config->cname) ? $config->cname : "https://{$config->bucket}.{$config->endpoint}";
+        $endpoint = preg_match('/^https?:\/\//', $config->endpoint) 
+            ? str_replace(['http://', 'https://'], '', $config->endpoint)
+            : $config->endpoint;
+        $url = !empty($config->cname) ? $config->cname : "https://{$config->bucket}.{$endpoint}";
         return "{$url}{$separate}{$path}";
     }
 
