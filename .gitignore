@@ -1,7 +1,6 @@
 /vendor/
 /.idea
 composer.lock
-config.php
 *.log
 /test.php
 
