@@ -1,10 +1,15 @@
 <?php
 
+use Guzzle\Http\Exception\ClientErrorResponseException;
+
 require __DIR__ . '/base.php';
 
 class Obs extends base
 {
-    private $_config = array();
+    /**
+     * @var \League\Flysystem\Config
+     */
+    private $_config;
 
     public function __construct()
     {
@@ -21,16 +26,34 @@ class Obs extends base
         $date = $this->getDate();
         $mimeType = $this->getMimeType($content);
 
-        $stringToSign = "{$method}\n\n{$mimeType}\n{$date}\n/{$this->_config['bucket']}/{$filename}";
+        $bucket = $this->_config->get('bucket');
+        $endpoint = $this->_config->get('endpoint');
+
+        $stringToSign = "{$method}\n\n{$mimeType}\n{$date}\n/{$bucket}/{$filename}";
 
         // var_dump($stringToSign); 
-        
-        $signature = base64_encode(hash_hmac('sha1', $stringToSign, $this->_config['secret'], true));
-        $authorize = 'AWS '.  $this->_config['key_id'] . ':' . $signature;
 
-        var_dump($signature);
+        $signature = base64_encode(hash_hmac('sha1', $stringToSign, $this->_config->get('secret'), true));
+        $authorize = 'AWS '.  $this->_config->get('key_id') . ':' . $signature;
 
-        $method = strtolower($method);
+        $client = $this->getRequestClient();
+
+        $request_url = $this->buildRequestUrl($endpoint, $bucket, $filename);
+
+        $headers = array(
+            'Content-Type' => 'binary/octet-stream',
+            'Date' => $date,
+            'Authorization' => $authorize,
+        );
+
+        $request = $client->createRequest($method, $request_url, $headers, $content);
+
+        try {
+            $response = $request->send();
+        } catch (ClientErrorResponseException $e) {
+            $response = $e->getResponse();
+        }
+        var_dump((string)$response->getBody());
     }
 }
 
