@@ -4,8 +4,8 @@ require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/config.php';
 
 use Guzzle\Http\Client;
-use \Config as BaseConfig;
-use League\Flysystem\Config;
+
+define('NAMET-OSS', true);
 
 class base
 {

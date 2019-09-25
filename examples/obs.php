@@ -60,4 +60,3 @@ class Obs extends base
 $obs = new Obs();
 
 $obs->putObject();
-

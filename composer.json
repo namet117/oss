@@ -1,12 +1,13 @@
 {
     "name": "namet/oss",
-    "description": "oss integrated from oss/cos/nos etc.",
+    "description": "oss integrated from oss/obs/cos/nos etc.",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
             "name": "nameT",
-            "email": "namet117@163.com"
+            "email": "namet117@163.com",
+            "homepage": "https://namet.xyz"
         }
     ],
     "autoload": {
@@ -17,7 +18,7 @@
     "require": {
         "php": ">= 5.3.3",
         "ext-json": "*",
-        "league/flysystem": "^1.0",
+        "ext-fileinfo": "*",
         "guzzle/guzzle": "~3.9"
     }
 }

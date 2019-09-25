@@ -6,8 +6,6 @@
 
 namespace Namet\Oss;
 
-use League\Flysystem\Config;
-
 /**
  * Class OssManage
  *
@@ -34,7 +32,10 @@ class OssManage
      * @var array
      */
     private static $_drivers = array(
+        // 阿里云
         'oss' => '\\Namet\\Oss\\Drivers\\Oss',
+        // 华为云
+        'obs' => '\\Namet\\Oss\\Drivers\\Obs',
 //        'cos' => '\\Namet\\Oss\\Drivers\\Cos',
 //        'nos' => '\\Namet\\Oss\\Drivers\\Nos',
 //        'oos' => '\\Namet\\Oss\\Drivers\\Oos',
@@ -46,7 +47,7 @@ class OssManage
      * 已生成的类实例
      * @var array
      */
-    private static $_instance = [];
+    private static $_instance = array();
 
     /**
      * 当前OSS驱动实例
@@ -58,7 +59,12 @@ class OssManage
      * 所有驱动配置信息，比如 ['oss' => [配置信息...], 'oos' => [配置信息...]]
      * @var array
      */
-    private $_driverConfig = [];
+    private $_driverConfig = array();
+    
+    /**
+     * @var 驱动状态
+     */ 
+    private $_statusCache = array();
 
     /**
      * OssManage constructor.
@@ -68,7 +74,7 @@ class OssManage
      *
      * @throws \Namet\Oss\OssException
      */
-    public function __construct($driver = '', $config = [])
+    public function __construct($driver = '', $config = array())
     {
         $driver && $this->driver($driver);
         $config && $this->config($config);
@@ -146,8 +152,6 @@ class OssManage
         // var_dump();
         // exit;
 
-        $config = new Config($this->_getDriverConfig());
-        $arguments[] = $config;
         return call_user_func_array([$this->_driver, $name], $arguments);
     }
 
@@ -159,12 +163,12 @@ class OssManage
      * @return void
      * @throws Namet\Oss\OssException
      */
-    private function _getDriverInstance($config = [])
+    private function _getDriverInstance($config = array())
     {
         // 获取驱动名称
         $driver_name = $this->_getDriverName();
         // 获取已经存在的配置信息
-        $old_config = json_encode(empty($this->_driverConfig) ? [] : $this->_driverConfig);
+        $old_config = json_encode(empty($this->_driverConfig) ? array() : $this->_driverConfig);
         // 排序配置信息
         ksort($config);
         if (!isset(self::$_instance[$driver_name]) || json_encode($config) != json_encode($old_config)) {
@@ -192,13 +196,14 @@ class OssManage
     /**
      * 判断是否驱动已设置
      *
-     * @param bool $all 是否检查全部
+     * @param bool $checkConfig 是否检查配置信息
      *
      * @return bool
      * @throws \Namet\Oss\OssException
      */
-    private function _checkIsReady($all = false)
+    private function _checkIsReady($checkConfig = false)
     {
+        if ($this->_statusCache)
         if (empty($this->_driver)) {
             $this->_throws('请先设置驱动！');
         }
@@ -207,6 +212,7 @@ class OssManage
         if ($all && !is_object($this->_driver) && empty($this->_driverConfig[$driver_name])) {
             $this->_throws('请传入驱动配置！');
         }
+
         return true;
     }
 
