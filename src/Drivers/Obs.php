@@ -11,7 +11,7 @@ namespace Namet\Oss\Drivers;
  */ 
 class Obs extends Base
 {
-    public function putObject()
+    public function test()
     {
         
     }

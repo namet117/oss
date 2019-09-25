@@ -12,6 +12,9 @@ namespace Namet\Oss\Interfaces;
  *
  * @package Namet\Oss
  */
+use Namet\Oss\Config;
+
+
 interface FileInterface
 {
     /**
