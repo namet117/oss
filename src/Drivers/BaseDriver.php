@@ -10,10 +10,18 @@ class DriverBase extends Base implements FileInterface, BucketInterface
 {
     public function write($path, $contents, Config $config)
     {
-        $date = $this->getDate();
-        $method = $this->getRequestMethod(__FUNCTION__);
-        $mime_type = $this->getMimeType();
-        $bucket = $this->config->bucket;
-        $filename = $path;
+        $params = [
+            'date' => $this->getDate(),
+            'method' => $this->getRequestMethod(__FUNCTION__),
+            'mime_type' => $this->getMimeType($contents),
+            'bucket' => $this->config->bucket,
+            'filename' => $path,
+        ];
+
+        $stringToSign = $this->makeStringToSign($params);
+
+        $authorization = $this->makeAuthorization($stringToSign);
+
+        $request_url = $this->makeRequestUrl($params);
     }
 }

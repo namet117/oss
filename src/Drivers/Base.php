@@ -81,6 +81,53 @@ abstract class Base
     }
 
     /**
+     * 创建用来加密的字符串
+     *
+     * @param array $params
+     *
+     * @return string
+     */ 
+    protected function makeStringToSign(array $params)
+    {
+        return "{$params['method']}\n\n{$params['mime_type']}\n{$params['date']}\n" . 
+            "/{$this->config->bucket}/{$params['filename']}";
+    }
+
+    /**
+     * 加密签名
+     *
+     * @param string $string StringToSign
+     *
+     * @return string
+     */ 
+    protected function makeAuthorization($string)
+    {
+        $signature = base64_encode(hash_hmac('sha1', $string, $config->secret, true));
+        $authorization = 'AWS '.  $this->config->key_id . ':' . $signature;
+
+        return $authorization;
+    }
+
+    /**
+     * 构造请求的Url
+     *
+     * @param array $params 请求的参数
+     *
+     * @return string
+     */ 
+    protected function makeRequestUrl(array $params)
+    {
+        if (preg_match('/^https?:\/\//', $this->config->endpoint)) {
+            $endpoint = str_replace('://', "://{$bucket}.", $endpoint);
+        } else {
+            $endpoint = "https://{$bucket}." . $endpoint;
+        }
+        $url = $endpoint . ($filename ? "/{$filename}" : '');
+
+        return $url;
+    }
+
+    /**
      * 抛出异常
      *
      * @param string $msg  异常信息
