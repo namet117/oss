@@ -2,12 +2,22 @@
 
 namespace Namet\Oss\Drivers;
 
+use Namet\Oss\Config;
 use Namet\Oss\Interfaces\BucketInterface;
 use Namet\Oss\Interfaces\FileInterface;
 
 
-class DriverBase extends Base implements FileInterface, BucketInterface
+abstract class DriverBase extends Base implements FileInterface, BucketInterface
 {
+    /**
+     * 写入字符串
+     *
+     * @param string $path
+     * @param string $contents
+     * @param Config $config
+     *
+     * @return array|false|void
+     */
     public function write($path, $contents, Config $config)
     {
         $params = [

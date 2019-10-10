@@ -13,12 +13,12 @@ use Namet\Oss\OssException;
 abstract class Base
 {
     /**
-     * @var \Namet\Oss\Config|array
+     * @var Config|array
      */ 
     protected $config = array();
 
     /**
-     * @var Guzzle\Http\Client
+     * @var Client
      */ 
     private $_client = null;
 
@@ -26,10 +26,10 @@ abstract class Base
      * 方法对应的HTTP请求方式
      * @var array
      */ 
-    private $_requestMethod = [
+    private $_requestMethod = array(
         'write' => 'PUT',
         'writeStream' => 'PUT',
-    ];
+    );
 
     /**
      * Constructor function 
@@ -69,12 +69,11 @@ abstract class Base
      * @param string $func 方法名，如：write，update等
      *
      * @return string
-     * @throws \Namet\Oss\OssException
      */ 
     protected function getRequestMethod($func)
     {
         if (!isset($this->_requestMethod[$func])) {
-            $this->throws('不存在的方法');
+            return false;
         }
 
         return $this->_requestMethod[$func];
@@ -133,7 +132,7 @@ abstract class Base
      * @param string $msg  异常信息
      * @param int    $code 错误码
      *
-     * @throws \Namet\Oss\OssException
+     * @throws OssException
      */ 
     protected function throws($msg, $code = 0)
     {
@@ -143,7 +142,7 @@ abstract class Base
     /**
      * 获取HTTP客户端
      *
-     * @return Guzzle\Http\Client
+     * @return Client
      */ 
     protected function getClient()
     {
