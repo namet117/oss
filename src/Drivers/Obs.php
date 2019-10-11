@@ -8,12 +8,9 @@ namespace Namet\Oss\Drivers;
 
 /**
  * Huawei Obs Clinet
- */ 
-class Obs extends Base
+ */
+class Obs extends DriverBase
 {
-    public function test()
-    {
-        
-    }
+
 }
 

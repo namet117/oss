@@ -14,28 +14,28 @@ abstract class Base
 {
     /**
      * @var Config|array
-     */ 
+     */
     protected $config = array();
 
     /**
      * @var Client
-     */ 
+     */
     private $_client = null;
 
     /**
      * 方法对应的HTTP请求方式
      * @var array
-     */ 
+     */
     private $_requestMethod = array(
         'write' => 'PUT',
         'writeStream' => 'PUT',
     );
 
     /**
-     * Constructor function 
+     * Constructor function
      *
      * @param array $config 配置信息
-     */   
+     */
     public function __construct($config = array())
     {
         if ($config) {
@@ -46,8 +46,8 @@ abstract class Base
     /**
      * 获取GMT格式的时间
      *
-     * @return string 
-     */ 
+     * @return string
+     */
     protected function getDate()
     {
         return gmdate('D, d M Y H:i:s \G\M\T');
@@ -55,10 +55,12 @@ abstract class Base
 
     /**
      * 获取文件的mime type
-     * TODO to be completed
+     *
+     * @param mixed $content 内容
+     *
      * @return string
-     */ 
-    protected function getMimeType()
+     */
+    protected function getMimeType($content)
     {
         return 'binary/octet-stream';
     }
@@ -69,7 +71,7 @@ abstract class Base
      * @param string $func 方法名，如：write，update等
      *
      * @return string
-     */ 
+     */
     protected function getRequestMethod($func)
     {
         if (!isset($this->_requestMethod[$func])) {
@@ -85,10 +87,10 @@ abstract class Base
      * @param array $params
      *
      * @return string
-     */ 
+     */
     protected function makeStringToSign(array $params)
     {
-        return "{$params['method']}\n\n{$params['mime_type']}\n{$params['date']}\n" . 
+        return "{$params['method']}\n\n{$params['mime_type']}\n{$params['date']}\n" .
             "/{$this->config->bucket}/{$params['filename']}";
     }
 
@@ -98,7 +100,7 @@ abstract class Base
      * @param string $string StringToSign
      *
      * @return string
-     */ 
+     */
     protected function makeAuthorization($string)
     {
         $signature = base64_encode(hash_hmac('sha1', $string, $config->secret, true));
@@ -113,7 +115,7 @@ abstract class Base
      * @param array $params 请求的参数
      *
      * @return string
-     */ 
+     */
     protected function makeRequestUrl(array $params)
     {
         if (preg_match('/^https?:\/\//', $this->config->endpoint)) {
@@ -133,7 +135,7 @@ abstract class Base
      * @param int    $code 错误码
      *
      * @throws OssException
-     */ 
+     */
     protected function throws($msg, $code = 0)
     {
         throw new OssException($msg, $code);
@@ -143,7 +145,7 @@ abstract class Base
      * 获取HTTP客户端
      *
      * @return Client
-     */ 
+     */
     protected function getClient()
     {
         if (!$this->_client) {

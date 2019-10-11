@@ -15,7 +15,7 @@ namespace Namet\Oss\Interfaces;
 use Namet\Oss\Config;
 
 
-interface FileInterface
+interface DriverInterface
 {
     /**
      * @const  VISIBILITY_PUBLIC  public visibility
@@ -70,6 +70,15 @@ interface FileInterface
      * @return array|false false on failure file meta data on success
      */
     public function updateStream($path, $resource, Config $config);
+
+    /**
+     * judge a file exists or not
+     *
+     * @param string $path file path
+     *
+     * @return bool
+     */
+    public function has($path);
 
     /**
      * Rename a file.

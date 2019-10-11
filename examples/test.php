@@ -5,34 +5,35 @@ require './vendor/autoload.php';
 use Namet\Oss\OssManage;
 use Namet\Oss\OssException;
 
+
+define('NAMET-OSS', true);
+
+$driver = 'obs';
+
+$configs = include './config.php';
+
+$config = $configs[$driver];
+
+
 try {
-    // 配置文件
-    $config = [
-        // �access_token 详情请查询各服务商文档
-        'key_id' => '',
-        // 密钥
-        'secret' => '',
-        // �桶名
-        'bucket' => '',
-        // 节点地址
-        'endpoint' => '',
-        // 自定义域名
-        'cname' => '',
-    ];
     /** ----  1. 获取实例  ---- */
     // �初始化获取实例的时候传入参数
     $instance = new OssManage('oss', $config);
     // 也可以先获取实例，然后传入参数
     $instance = new OssManage();
-    $instance->driver('oss')->config($config);
+    $instance->driver($driver)->config($config);
 
     /** ----  2.基础用法  ---- */
     $path = 'test/test1234.txt';
+    // 1. 将字符串内容写入文件
+    $result = $instance->write($path, 'This is a Conetnt');
+
+    echo "write string into file result: \n";
+    var_dump($result);
+exit;
     // 上传文件
     $local_file = './README.md';
     $instance->upload($path, $local_file);
-    // 将字符串内容写入文件
-    $instance->write($path, 'This is a Conetnt');
     // 将文件流写入文件
     $instance->writeStream($path, $resource);
     // 删除文件

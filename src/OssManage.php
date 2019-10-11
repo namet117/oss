@@ -6,6 +6,9 @@
 
 namespace Namet\Oss;
 
+use \Namet\Oss\Interfaces\DriverInterface;
+
+
 /**
  * Class OssManage
  *
@@ -14,9 +17,9 @@ namespace Namet\Oss;
  * @method string getUrl(string $path) 获取文件链接
  * @method bool upload(string $path, string $local) 上传本地文件
  * @method true|array writeStream(string $path, resource $resource) 将文件流上传到OSS中
- * @method true|array write(string $path, resource $resource) 将文件上传到OSS中
+ * @method true|array write(string $path, string $contents) 将文件上传到OSS中
  * @method true|array updateStream(string $path, resource $resource) 将文件流更新到OSS中去
- * @method true|array update(string $path, resource $resource) 将文件更新到OSS中去
+ * @method true|array update(string $path, string $content) 将文件更新到OSS中去
  * @method bool has(string $path) 判断文件是否存在
  * @method bool delete(string $path) 删除文件
  * @method bool rename(string $path, string $new_path) 重命名文件
@@ -33,7 +36,7 @@ class OssManage
      */
     private static $_drivers = array(
         // 阿里云
-        'oss' => '\\Namet\\Oss\\Drivers\\Oss',
+//        'oss' => '\\Namet\\Oss\\Drivers\\Oss',
         // 华为云
         'obs' => '\\Namet\\Oss\\Drivers\\Obs',
 //        'cos' => '\\Namet\\Oss\\Drivers\\Cos',
@@ -51,7 +54,7 @@ class OssManage
 
     /**
      * 当前OSS驱动实例
-     * @var null|\Namet\Oss\DriverInterface
+     * @var DriverInterface
      */
     private $_driver = null;
 
@@ -60,10 +63,10 @@ class OssManage
      * @var array
      */
     private $_driverConfig = array();
-    
+
     /**
-     * @var 驱动状态
-     */ 
+     * @var array 驱动状态
+     */
     private $_statusCache = array();
 
     /**
@@ -86,7 +89,7 @@ class OssManage
      * @param $config
      *
      * @return $this
-     * @throws \Namet\Oss\OssException
+     * @throws OssException
      */
     public function config($config)
     {
@@ -106,7 +109,7 @@ class OssManage
     public function driver($name)
     {
         if (!isset(self::$_drivers[$name])) {
-            $this->_throw("驱动：{$name} 不存在！");
+            OssException::throws("驱动：{$name} 不存在！");
         }
         $this->_driver = $name;
 
@@ -125,11 +128,11 @@ class OssManage
     public function extend($name, $class)
     {
         if (isset(self::$_drivers[$name])) {
-            $this->_throws("驱动名：{$name} 已存在，请更换！");
+            OssException::throws("驱动名：{$name} 已存在，请更换！");
         }
         $instance = is_object($class) ? $class : new $class;
         if (!$instance instanceof DriverInterface) {
-            $this->_throws('驱动类：' . get_class($class) . '未实现\\Namet\\Oss\\DriverInterface接口类');
+            OssException::throws('驱动类：' . get_class($class) . '未实现\\Namet\\Oss\\DriverInterface接口类');
         }
 
         return $this;
@@ -152,7 +155,7 @@ class OssManage
         // var_dump();
         // exit;
 
-        return call_user_func_array([$this->_driver, $name], $arguments);
+        return call_user_func_array(array($this->_driver, $name), $arguments);
     }
 
     /**
@@ -181,36 +184,22 @@ class OssManage
     }
 
     /**
-     * 抛出异常
-     *
-     * @param string $msg  错误信息
-     * @param int    $code 错误码
-     *
-     * @throws \Namet\Oss\OssException
-     */
-    private function _throws($msg, $code = 0)
-    {
-        throw new OssException($msg, $code);
-    }
-
-    /**
      * 判断是否驱动已设置
      *
      * @param bool $checkConfig 是否检查配置信息
      *
      * @return bool
-     * @throws \Namet\Oss\OssException
      */
     private function _checkIsReady($checkConfig = false)
     {
         if ($this->_statusCache)
         if (empty($this->_driver)) {
-            $this->_throws('请先设置驱动！');
+            OssException::throws('请先设置驱动！');
         }
         $driver_name = $this->_getDriverName();
 
         if ($all && !is_object($this->_driver) && empty($this->_driverConfig[$driver_name])) {
-            $this->_throws('请传入驱动配置！');
+            OssException::throws('请传入驱动配置！');
         }
 
         return true;

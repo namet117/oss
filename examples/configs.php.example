@@ -12,7 +12,7 @@ $configs = array(
         'secret' => '',
         'bucket' => '',
         'endpoint' => '',
-        'custom' => '',
+        'cname' => '',
     ),
         // 华为云
     'obs' => array(
@@ -28,7 +28,7 @@ $configs = array(
         'secret' => '',
         'bucket' => '',
         'endpoint' => '',
-        'custom' => '',
+        'cname' => '',
     ),
 );
 

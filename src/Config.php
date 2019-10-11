@@ -12,6 +12,12 @@ namespace Namet\Oss;
  *
  * Based on\League\Flysystem\Config
  *
+ * @property string $key_id   各平台的app id
+ * @property string $secret   各平台的密钥
+ * @property string $bucket   桶名
+ * @property string $endpoint 桶地址
+ * @property string $cname    自定义域名
+ *
  * @package Namet\Oss
  *
  * @var string key_id
@@ -21,7 +27,7 @@ class Config
     /**
      * @var array
      */
-    protected $settings = [];
+    protected $settings = array();
 
     /**
      * @var Config|null
