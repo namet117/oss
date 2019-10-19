@@ -7,16 +7,10 @@
 namespace Namet\Oss\Drivers;
 
 use Guzzle\Http\Client;
-use Namet\Oss\Config;
 use Namet\Oss\OssException;
 
 abstract class Base
 {
-    /**
-     * @var Config|array
-     */
-    protected $config = array();
-
     /**
      * @var Client
      */
@@ -30,18 +24,6 @@ abstract class Base
         'write' => 'PUT',
         'writeStream' => 'PUT',
     );
-
-    /**
-     * Constructor function
-     *
-     * @param array $config 配置信息
-     */
-    public function __construct($config = array())
-    {
-        if ($config) {
-            $this->config = new Config($config);
-        }
-    }
 
     /**
      * 获取GMT格式的时间
@@ -62,6 +44,7 @@ abstract class Base
      */
     protected function getMimeType($content)
     {
+        // TODO 待扩展
         return 'binary/octet-stream';
     }
 
@@ -91,7 +74,7 @@ abstract class Base
     protected function makeStringToSign(array $params)
     {
         return "{$params['method']}\n\n{$params['mime_type']}\n{$params['date']}\n" .
-            "/{$this->config->bucket}/{$params['filename']}";
+            "/{$params['config']->bucket}/{$params['filename']}";
     }
 
     /**

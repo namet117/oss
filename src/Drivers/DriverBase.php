@@ -4,10 +4,10 @@ namespace Namet\Oss\Drivers;
 
 use Namet\Oss\Config;
 use Namet\Oss\Interfaces\BucketInterface;
-use Namet\Oss\Interfaces\DriverInterface;
+use Namet\Oss\Interfaces\ObjectInterface;
 
 
-abstract class DriverBase extends Base implements DriverInterface, BucketInterface
+abstract class DriverBase extends Base implements ObjectInterface, BucketInterface
 {
     /**
      * 写入字符串
@@ -24,7 +24,7 @@ abstract class DriverBase extends Base implements DriverInterface, BucketInterfa
             'date' => $this->getDate(),
             'method' => $this->getRequestMethod(__FUNCTION__),
             'mime_type' => $this->getMimeType($contents),
-            'bucket' => $this->config->bucket,
+            'config' => $config,
             'filename' => $path,
         );
 

@@ -10,16 +10,15 @@ define('NAMET-OSS', true);
 
 $driver = 'obs';
 
-$configs = include './config.php';
+$configs = include dirname(__FILE__) . '/config.php';
+
 
 $config = $configs[$driver];
 
 
 try {
     /** ----  1. 获取实例  ---- */
-    // �初始化获取实例的时候传入参数
-    $instance = new OssManage('oss', $config);
-    // 也可以先获取实例，然后传入参数
+    // 获取实例
     $instance = new OssManage();
     $instance->driver($driver)->config($config);
 

@@ -39,7 +39,7 @@ class Config
      *
      * @param array $settings
      */
-    public function __construct(array $settings = [])
+    public function __construct(array $settings = array())
     {
         $this->settings = $settings;
     }
@@ -130,5 +130,17 @@ class Config
     public function __get($name)
     {
         return $this->get($name);
+    }
+
+    /**
+     * Get Original Array
+     *
+     * @author namet117<namet117@163.com>
+     *
+     * @return array
+     */
+    public function original()
+    {
+        return $this->settings;
     }
 }

@@ -15,7 +15,7 @@ namespace Namet\Oss\Interfaces;
 use Namet\Oss\Config;
 
 
-interface DriverInterface
+interface ObjectInterface
 {
     /**
      * @const  VISIBILITY_PUBLIC  public visibility

@@ -6,7 +6,10 @@
 
 namespace Namet\Oss;
 
-use \Namet\Oss\Interfaces\DriverInterface;
+use Namet\Oss\Config;
+use Namet\Oss\Drivers\DriverBase;
+use Namet\Oss\Interfaces\BucketInterface;
+use Namet\Oss\Interfaces\ObjectInterface;
 
 
 /**
@@ -54,9 +57,16 @@ class OssManage
 
     /**
      * 当前OSS驱动实例
-     * @var DriverInterface
+     *
+     * @var string|DriverBase
      */
-    private $_driver = null;
+    private $_driver = '';
+
+    /**
+     * 当前OSS的配置信息
+     * @var array|Config
+     */
+    private $_config = array();
 
     /**
      * 所有驱动配置信息，比如 ['oss' => [配置信息...], 'oos' => [配置信息...]]
@@ -89,12 +99,15 @@ class OssManage
      * @param $config
      *
      * @return $this
-     * @throws OssException
      */
-    public function config($config)
+    public function config(array $config)
     {
-        $this->_checkIsReady();
-        $this->_getDriverInstance($config);
+        if (!$this->_driver) {
+            OssException::throws('请先传入driver');
+        }
+        $this->_config = $config;
+
+        $this->_getDriverInstance();
 
         return $this;
     }
@@ -131,8 +144,11 @@ class OssManage
             OssException::throws("驱动名：{$name} 已存在，请更换！");
         }
         $instance = is_object($class) ? $class : new $class;
-        if (!$instance instanceof DriverInterface) {
-            OssException::throws('驱动类：' . get_class($class) . '未实现\\Namet\\Oss\\DriverInterface接口类');
+        if (!$instance instanceof ObjectInterface/* || !$instance instanceof BucketInterface*/) {
+            OssException::throws(
+                '驱动类：' . get_class($class) . '须实现Namet\\Oss\\Interfaces\\BucketInterface'
+                    . '和Namet\\Oss\\Interfaces\\BucketInterface接口类'
+            );
         }
 
         return $this;
@@ -145,64 +161,42 @@ class OssManage
      * @param $arguments
      *
      * @return mixed
-     * @throws \Namet\Oss\OssException
      */
     public function __call($name, $arguments)
     {
-        $this->_checkIsReady(true);
-
-        // var_dump(get_class($this->_driver));
-        // var_dump();
-        // exit;
-
+        $arguments[] = $this->_driverConfig;
         return call_user_func_array(array($this->_driver, $name), $arguments);
     }
 
     /**
      * 获取Driver实例
      *
-     * @param array $config 配置信息
-     *
      * @return void
-     * @throws Namet\Oss\OssException
      */
-    private function _getDriverInstance($config = array())
+    private function _getDriverInstance()
     {
         // 获取驱动名称
         $driver_name = $this->_getDriverName();
         // 获取已经存在的配置信息
-        $old_config = json_encode(empty($this->_driverConfig) ? array() : $this->_driverConfig);
+        $old_config = $this->_getDriverConfig(true);
         // 排序配置信息
-        ksort($config);
-        if (!isset(self::$_instance[$driver_name]) || json_encode($config) != json_encode($old_config)) {
-            $instance = new self::$_drivers[$driver_name]($config);
+        ksort($this->_config);
+        // 当传入的config不同时要重新获取实例
+        if (!isset(self::$_instance[$driver_name]) || json_encode($this->_config) != json_encode($old_config)) {
+            // 驱动类名
+            $class = self::$_drivers[$driver_name];
+            // 获取实例
+            $instance = new $class($this->_config);
+            // 保存实例
             self::$_instance[$driver_name] = $instance;
         }
 
+        // 获取实例到当前对象
         $this->_driver = self::$_instance[$driver_name];
-        $this->_driverConfig[$driver_name] = $config;
-    }
-
-    /**
-     * 判断是否驱动已设置
-     *
-     * @param bool $checkConfig 是否检查配置信息
-     *
-     * @return bool
-     */
-    private function _checkIsReady($checkConfig = false)
-    {
-        if ($this->_statusCache)
-        if (empty($this->_driver)) {
-            OssException::throws('请先设置驱动！');
-        }
-        $driver_name = $this->_getDriverName();
-
-        if ($all && !is_object($this->_driver) && empty($this->_driverConfig[$driver_name])) {
-            OssException::throws('请传入驱动配置！');
-        }
-
-        return true;
+        // 保存当前的配置
+        $this->_driverConfig[$driver_name] = new Config($this->_config);
+        // 清空传入的配置信息
+        $this->_config = array();
     }
 
     /**
@@ -220,10 +214,16 @@ class OssManage
     /**
      * 获取当前驱动的配置文件
      *
+     * @param bool $array 是否返回数组格式
+     *
      * @return array
      */
-    private function _getDriverConfig()
+    private function _getDriverConfig($array = false)
     {
-        return $this->_driverConfig[$this->_getDriverName()];
+        $config =  isset($this->_driverConfig[$this->_getDriverName()])
+            ? $this->_driverConfig[$this->_getDriverName()]
+            : array();
+
+        return $config ? ($array ? $config->original() : $config) : array();
     }
 }
