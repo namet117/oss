@@ -80,16 +80,15 @@ abstract class Base
     /**
      * 加密签名
      *
-     * @param string $string StringToSign
+     * @param array $params
      *
      * @return string
      */
-    protected function makeAuthorization($string)
+    protected function makeAuthorization($params)
     {
-        $signature = base64_encode(hash_hmac('sha1', $string, $config->secret, true));
-        $authorization = 'AWS '.  $this->config->key_id . ':' . $signature;
+        $signature = base64_encode(hash_hmac('sha1', $params['string_to_sign'], $params['config']->secret, true));
 
-        return $authorization;
+        return "AWS{$params['config']->key_id}:{$signature}";
     }
 
     /**

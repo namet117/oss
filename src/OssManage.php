@@ -75,17 +75,12 @@ class OssManage
     private $_driverConfig = array();
 
     /**
-     * @var array 驱动状态
-     */
-    private $_statusCache = array();
-
-    /**
      * OssManage constructor.
      *
      * @param string $driver 驱动名称，可选值：oss/bos/cos/nos/qos/oos/ufile
      * @param array  $config 配置信息
      *
-     * @throws \Namet\Oss\OssException
+     * @return void
      */
     public function __construct($driver = '', $config = array())
     {
@@ -136,7 +131,6 @@ class OssManage
      * @param mixed  $class 驱动类
      *
      * @return $this
-     * @throws \Namet\Oss\OssException
      */
     public function extend($name, $class)
     {
@@ -164,7 +158,10 @@ class OssManage
      */
     public function __call($name, $arguments)
     {
-        $arguments[] = $this->_driverConfig;
+        // 多传入一个Config信息
+        $arguments[] = $this->_getDriverConfig();
+
+        // 调用方法
         return call_user_func_array(array($this->_driver, $name), $arguments);
     }
 
@@ -183,18 +180,18 @@ class OssManage
         ksort($this->_config);
         // 当传入的config不同时要重新获取实例
         if (!isset(self::$_instance[$driver_name]) || json_encode($this->_config) != json_encode($old_config)) {
+            // 保存当前的配置
+            $this->_driverConfig[$driver_name] = new Config($this->_config);
             // 驱动类名
             $class = self::$_drivers[$driver_name];
             // 获取实例
-            $instance = new $class($this->_config);
+            $instance = new $class($this->_driverConfig[$driver_name]);
             // 保存实例
             self::$_instance[$driver_name] = $instance;
         }
 
         // 获取实例到当前对象
         $this->_driver = self::$_instance[$driver_name];
-        // 保存当前的配置
-        $this->_driverConfig[$driver_name] = new Config($this->_config);
         // 清空传入的配置信息
         $this->_config = array();
     }

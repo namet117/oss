@@ -10,6 +10,24 @@ use Namet\Oss\Interfaces\ObjectInterface;
 abstract class DriverBase extends Base implements ObjectInterface, BucketInterface
 {
     /**
+     * 配置信息
+     * @var Config
+     */
+    protected $config = null;
+
+    /**
+     * DriverBase constructor.
+     *
+     * @param \Namet\Oss\Config|null $config
+     */
+    public function __construct(Config $config = null)
+    {
+        if ($config) {
+            $this->config = $config;
+        }
+    }
+
+    /**
      * 写入字符串
      *
      * @param string $path
@@ -28,11 +46,11 @@ abstract class DriverBase extends Base implements ObjectInterface, BucketInterfa
             'filename' => $path,
         );
 
-        $stringToSign = $this->makeStringToSign($params);
+        $params['string_to_sign'] = $this->makeStringToSign($params);
 
-        $authorization = $this->makeAuthorization($stringToSign);
+        $params['authorization'] = $this->makeAuthorization($params);
 
-        $request_url = $this->makeRequestUrl($params);
+        $params['request_url'] = $this->makeRequestUrl($params);
     }
 
     public function writeStream($path, $resource, Config $config)
