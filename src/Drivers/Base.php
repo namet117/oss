@@ -7,6 +7,7 @@
 namespace Namet\Oss\Drivers;
 
 use Guzzle\Http\Client;
+use Guzzle\Http\Exception\ClientErrorResponseException;
 use Namet\Oss\OssException;
 
 abstract class Base
@@ -88,7 +89,7 @@ abstract class Base
     {
         $signature = base64_encode(hash_hmac('sha1', $params['string_to_sign'], $params['config']->secret, true));
 
-        return "AWS{$params['config']->key_id}:{$signature}";
+        return "AWS {$params['config']->key_id}:{$signature}";
     }
 
     /**
@@ -140,14 +141,14 @@ abstract class Base
     /**
      * 发起请求
      *
-     * @param array $params 
+     * @param array $params
      *
      * @return mixed
-     */  
+     */
     protected function sendRequest(array $params)
     {
         // 如果不存在请求地址，则执行拼装
-        if (empty($params['request_url']) {
+        if (empty($params['request_url'])) {
             $params['request_url'] = $this->makeRequestUrl($params);
         }
 
@@ -155,13 +156,39 @@ abstract class Base
         $client = $this->getClient();
 
         // 构造请求
-        $headers = array();
+        $headers = $this->buildHeaders($params);
+
+        $request = $client->createRequest($params['method'], $params['request_url'], $headers, $params['body']);
+
+        try {
+            $response = $request->send();
+            echo "success!! \n";
+            echo $response->getBody(1);
+        } catch (ClientErrorResponseException $e) {
+            $response = $e->getResponse();
+            echo "failed : \n";
+            echo $response->getBody(1);
+        }
+exit;
+        return $response->getBody();
     }
 
+    /**
+     * 构造headers
+     *
+     * @author namet117<namet117@163.com>
+     *
+     * @param array $params
+     *
+     * @return array
+     */
     protected function buildHeaders(array $params)
     {
         return array(
-        
+            'Content-Type' => $params['mime_type'],
+            'Accept' => 'application/json',
+            'Date' => $params['date'],
+            'Authorization' => $params['authorization'],
         );
     }
 }

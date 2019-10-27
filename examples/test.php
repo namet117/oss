@@ -23,9 +23,10 @@ try {
     $instance->driver($driver)->config($config);
 
     /** ----  2.基础用法  ---- */
-    $path = 'test/test1234.txt';
+    $path = 'namet-test-file-4';
+    $content = 'This is namet test file, Hello Obs!';
     // 1. 将字符串内容写入文件
-    $result = $instance->write($path, 'This is a Conetnt');
+    $result = $instance->write($path, $content);
 
     echo "write string into file result: \n";
     var_dump($result);

@@ -42,6 +42,7 @@ abstract class DriverBase extends Base implements ObjectInterface, BucketInterfa
             'date' => $this->getDate(),
             'method' => $this->getRequestMethod(__FUNCTION__),
             'mime_type' => $this->getMimeType($contents),
+            'body' => $contents,
             'config' => $config,
             'filename' => $path,
         );
@@ -50,9 +51,10 @@ abstract class DriverBase extends Base implements ObjectInterface, BucketInterfa
 
         $params['authorization'] = $this->makeAuthorization($params);
 
-        print_r($params);exit;
+        $response = $this->sendRequest($params);
 
-        $client = $this->sendRequest($params);
+        var_dump((string)$response);
+        exit;
     }
 
     public function writeStream($path, $resource, Config $config)

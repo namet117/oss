@@ -4,8 +4,7 @@ if (!define('NAMET-OSS')) {
     exit('forbidden!');
 }
 
-
-$configs = array(
+return array(
     // 阿里云
     'oss' => array(
         'key_id' => '',
@@ -31,5 +30,3 @@ $configs = array(
         'cname' => '',
     ),
 );
-
-return $configs;
