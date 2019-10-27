@@ -50,7 +50,9 @@ abstract class DriverBase extends Base implements ObjectInterface, BucketInterfa
 
         $params['authorization'] = $this->makeAuthorization($params);
 
-        $params['request_url'] = $this->makeRequestUrl($params);
+        print_r($params);exit;
+
+        $client = $this->sendRequest($params);
     }
 
     public function writeStream($path, $resource, Config $config)

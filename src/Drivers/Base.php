@@ -84,7 +84,7 @@ abstract class Base
      *
      * @return string
      */
-    protected function makeAuthorization($params)
+    protected function makeAuthorization(array $params)
     {
         $signature = base64_encode(hash_hmac('sha1', $params['string_to_sign'], $params['config']->secret, true));
 
@@ -100,12 +100,12 @@ abstract class Base
      */
     protected function makeRequestUrl(array $params)
     {
-        if (preg_match('/^https?:\/\//', $this->config->endpoint)) {
-            $endpoint = str_replace('://', "://{$bucket}.", $endpoint);
+        if (preg_match('/^https?:\/\//', $params['config']->endpoint)) {
+            $endpoint = str_replace('://', "://{$params['config']->bucket}.", $params['config']->endpoint);
         } else {
-            $endpoint = "https://{$bucket}." . $endpoint;
+            $endpoint = "https://{$params['config']->bucket}." . $params['config']->endpoint;
         }
-        $url = $endpoint . ($filename ? "/{$filename}" : '');
+        $url = $endpoint . ($params['filename'] ? "/{$params['filename']}" : '');
 
         return $url;
     }
@@ -137,6 +137,32 @@ abstract class Base
         return $this->_client;
     }
 
+    /**
+     * 发起请求
+     *
+     * @param array $params 
+     *
+     * @return mixed
+     */  
+    protected function sendRequest(array $params)
+    {
+        // 如果不存在请求地址，则执行拼装
+        if (empty($params['request_url']) {
+            $params['request_url'] = $this->makeRequestUrl($params);
+        }
 
+        // 获取实例
+        $client = $this->getClient();
+
+        // 构造请求
+        $headers = array();
+    }
+
+    protected function buildHeaders(array $params)
+    {
+        return array(
+        
+        );
+    }
 }
 
