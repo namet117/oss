@@ -17,7 +17,8 @@
     "require": {
         "php": ">= 5.5.9",
         "ext-json": "*",
+        "ext-fileinfo": "*",
         "league/flysystem": "^1.0",
-        "aliyuncs/oss-sdk-php": "^2"
+        "guzzlehttp/guzzle": "^6"
     }
 }

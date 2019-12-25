@@ -1,5 +1,6 @@
 # OSS
-
+## Notice
+正在重构`2.0`版本，`master`分支为`开发`分支，最新稳定版请见 [Releases](https://github.com/namet117/oss/releases)
 ## 简介
 一个集成各家云服务商对象存储功能的扩展包。计划包含：
 * [阿里云](https://www.aliyun.com/product/oss)(`OSS`)

@@ -4,10 +4,10 @@
  * DateTime: 2019/12/26 01:01
  */
 
-namespace Namet\Oss;
+namespace Namet\Oss\Interfaces;
 
 
-class OssException
+class ObjectInterface
 {
 
 }
