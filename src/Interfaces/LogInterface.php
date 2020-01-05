@@ -7,7 +7,7 @@
 namespace Namet\Oss\Interfaces;
 
 
-class LogInterface
+trait LogInterface
 {
 
 }

@@ -7,7 +7,20 @@
 namespace Namet\Oss;
 
 
-class OssException
+class OssException extends \Exception
 {
-
+    /**
+     * 抛出异常
+     *
+     * @param string     $msg
+     * @param int        $code
+     * @param \Throwable $previous
+     *
+     * @return void
+     * @throws OssException
+     */
+    public static function throws($msg, $code = 0, $previous = null)
+    {
+        throw new OssException($msg, $code, $previous);
+    }
 }

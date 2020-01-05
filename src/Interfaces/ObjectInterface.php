@@ -6,8 +6,9 @@
 
 namespace Namet\Oss\Interfaces;
 
+use League\Flysystem\AdapterInterface;
 
-class ObjectInterface
+interface ObjectInterface extends AdapterInterface
 {
 
 }
