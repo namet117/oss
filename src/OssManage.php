@@ -11,7 +11,25 @@ use Namet\Oss\Interfaces\BucketInterface;
 use Namet\Oss\Interfaces\ObjectInterface;
 use League\Flysystem\Config;
 
-
+/**
+ * Class OssManage
+ *
+ * @package Namet\Oss
+ *
+ * @method void writeStream(string $path, resource $resource) 将文件流上传到OSS中
+ * @method void write(string $path, string $contents) 将文件上传到OSS中
+ * @method void updateStream(string $path, resource $resource) 将文件流更新到OSS中去
+ * @method void update(string $path, string $content) 将文件更新到OSS中去
+ * @method bool upload(string $path, string $local) 上传本地文件到OSS
+ * @method bool has(string $path) 判断文件是否存在
+ * @method bool delete(string $path) 删除文件
+ * @method bool rename(string $path, string $new_path) 重命名文件
+ * @method bool copy(string $path, string $new_path) 拷贝文件
+ * @method bool deleteDir(string $path) 删除文件夹
+ * @method bool setVisibility(string $path, string $visibility = 'public') 设置文件权限
+ * @method string read(string $path) 读取文件内容到内存中
+ * @method string getUrl(string $path) 获取文件链接
+ */
 class OssManage
 {
     /**

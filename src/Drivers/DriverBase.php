@@ -7,6 +7,7 @@ use League\Flysystem\Config;
 use League\Flysystem\FileNotFoundException;
 use Namet\Oss\Interfaces\BucketInterface;
 use Namet\Oss\Interfaces\ObjectInterface;
+use Namet\Oss\OssException;
 use Namet\Oss\Traits\DriverTrait;
 
 
@@ -32,6 +33,31 @@ abstract class DriverBase implements ObjectInterface, BucketInterface
         $this->config = $config;
     }
 
+    public function write($path, $contents, Config $config)
+    {
+        $params = [
+            'date' => $this->getDate(),
+            'method' => $this->getRequestMethod(__FUNCTION__),
+            'mime_type' => $this->getMimeType($contents),
+            'body' => $contents,
+            'config' => $config,
+            'filename' => $path,
+        ];
+
+        $params['string_to_sign'] = $this->makeStringToSign($params);
+        $params['authorization'] = $this->makeAuthorization($params);
+
+        $response = $this->sendRequest($params);
+
+        var_dump((string)$response->getBody());
+        exit;
+    }
+
+    public function writeStream($path, $resource, Config $config)
+    {
+
+    }
+
     /**
      * Read a file.
      *
@@ -43,7 +69,6 @@ abstract class DriverBase implements ObjectInterface, BucketInterface
      */
     public function read($path)
     {
-
     }
 
     /**
@@ -57,27 +82,26 @@ abstract class DriverBase implements ObjectInterface, BucketInterface
      */
     public function readStream($path)
     {
-
     }
 
-    public function write($path, $contents, Config $config)
-    {
-
-    }
-
-    public function writeStream($path, $resource, Config $config)
-    {
-
-    }
-
+    // 有则更新，无则抛异常
     public function update($path, $contents, Config $config)
     {
+        if (!$this->has($path)) {
+            OssException::throws("{$path} 不存在");
+        }
 
+        return $this->write($path, $contents, $config);
     }
 
+    // 有则更新，无则抛异常
     public function updateStream($path, $resource, Config $config)
     {
+        if (!$this->has($path)) {
+            OssException::throws("{$path} 不存在");
+        }
 
+        return $this->writeStream($path, $resource, $config);
     }
 
     /**
@@ -176,5 +200,21 @@ abstract class DriverBase implements ObjectInterface, BucketInterface
     public function listContents($directory = '', $recursive = false)
     {
         // TODO: Implement listContents() method.
+    }
+
+    public function getMetadata($path)
+    {
+        // TODO: Implement getMetadata() method.
+    }
+
+    public function getMimetype($path)
+    {
+        // TODO: Implement getMimetype() method.
+    }
+
+
+    public function getTimestamp($path)
+    {
+        // TODO: Implement getTimestamp() method.
     }
 }

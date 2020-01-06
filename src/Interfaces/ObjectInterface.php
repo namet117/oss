@@ -10,5 +10,5 @@ use League\Flysystem\AdapterInterface;
 
 interface ObjectInterface extends AdapterInterface
 {
-
+    function getUrl($path);
 }
