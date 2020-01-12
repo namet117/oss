@@ -73,7 +73,7 @@ class OssManage
     public function __construct($driver, array $config)
     {
         $this->_currentConfig = new Config($config);
-        $this->_currentDriver = $this->_createDriverInstance($driver);
+        $this->_createDriverInstance($driver);
     }
 
     /**

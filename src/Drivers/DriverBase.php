@@ -217,4 +217,9 @@ abstract class DriverBase implements ObjectInterface, BucketInterface
     {
         // TODO: Implement getTimestamp() method.
     }
+
+    public function getUrl($path)
+    {
+        // TODO Implement getUrl() method
+    }
 }

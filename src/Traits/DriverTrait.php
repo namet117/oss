@@ -3,7 +3,8 @@
 namespace Namet\Oss\Traits;
 
 use GuzzleHttp\Client;
-
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
 
 trait DriverTrait
 {
@@ -59,7 +60,7 @@ trait DriverTrait
     protected function makeStringToSign(array $params)
     {
         return "{$params['method']}\n\n{$params['mime_type']}\n{$params['date']}\n" .
-            "/{$params['config']->bucket}/{$params['filename']}";
+            "/{$params['config']->get('bucket')}/{$params['filename']}";
     }
 
     /**
@@ -71,10 +72,30 @@ trait DriverTrait
      */
     protected function makeAuthorization(array $params)
     {
-        $signature = base64_encode(hash_hmac('sha1', $params['string_to_sign'], $params['config']->secret, true));
+        $signature = base64_encode(hash_hmac('sha1', $params['string_to_sign'], $params['config']->get('secret'), true));
 
-        return "AWS {$params['config']->key_id}:{$signature}";
+        return "AWS {$params['config']->get('key_id')}:{$signature}";
     }
+
+
+    /**
+     * 构造请求的Url
+     *
+     * @param array $params 请求的参数
+     *
+     * @return string
+     */
+    protected function makeRequestUrl(array $params)
+    {
+        if (preg_match('/^https?:\/\//', $params['config']->get('endpoint'))) {
+            $endpoint = str_replace('://', "://{$params['config']->get('bucket')}.", $params['config']->get('endpoint'));
+        } else {
+            $endpoint = "https://{$params['config']->get('bucket')}." . $params['config']->get('endpoint');
+        }
+
+        return $endpoint . ($params['filename'] ? "/{$params['filename']}" : '');
+    }
+
 
     /**
      * 获取Http Client实例
@@ -83,11 +104,11 @@ trait DriverTrait
      */
     public function getClient()
     {
-        if (is_null($this->client)) {
-            $this->client = new Client();
+        if (is_null($this->_client)) {
+            $this->_client = new Client();
         }
 
-        return $this->client;
+        return $this->_client;
     }
 
     /**
@@ -124,16 +145,15 @@ trait DriverTrait
         // 获取实例
         $client = $this->getClient();
 
-        // 构造请求
-        $headers = $this->buildHeaders($params);
-
-        $request = $client->createRequest($params['method'], $params['request_url'], $headers, $params['body']);
-
         try {
-            $response = $request->send();
+            $headers = $this->buildHeaders($params);
+            $body = isset($params['body']) ? $params['body'] : null;
+            $request = new Request($params['method'], $params['request_url'], $headers, $body);
+
+            $response = $client->send($request);
             echo "success!! \n";
             echo $response->getBody(1);
-        } catch (ClientErrorResponseException $e) {
+        } catch (RequestException $e) {
             $response = $e->getResponse();
             echo "failed : \n";
             echo $response->getBody(1);
