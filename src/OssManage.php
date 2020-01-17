@@ -16,8 +16,8 @@ use League\Flysystem\Config;
  *
  * @package Namet\Oss
  *
- * @method void writeStream(string $path, resource $resource) 将文件流上传到OSS中
  * @method void write(string $path, string $contents) 将文件上传到OSS中
+ * @method void writeStream(string $path, resource $resource) 将文件流上传到OSS中
  * @method void updateStream(string $path, resource $resource) 将文件流更新到OSS中去
  * @method void update(string $path, string $content) 将文件更新到OSS中去
  * @method bool upload(string $path, string $local) 上传本地文件到OSS

@@ -9,11 +9,12 @@ use Namet\Oss\Interfaces\BucketInterface;
 use Namet\Oss\Interfaces\ObjectInterface;
 use Namet\Oss\OssException;
 use Namet\Oss\Traits\DriverTrait;
+use Namet\Oss\Traits\ResponseTrait;
 
 
 abstract class DriverBase implements ObjectInterface, BucketInterface
 {
-    use DriverTrait;
+    use DriverTrait, ResponseTrait;
 
 
     /**
@@ -44,13 +45,10 @@ abstract class DriverBase implements ObjectInterface, BucketInterface
             'filename' => $path,
         ];
 
-        $params['string_to_sign'] = $this->makeStringToSign($params);
+        $params['string_to_sign'] = $this->makeStringToSign($params) . '1';
         $params['authorization'] = $this->makeAuthorization($params);
 
-        $response = $this->sendRequest($params);
-
-        var_dump((string)$response->getBody());
-        exit;
+        $this->sendRequest($params);
     }
 
     public function writeStream($path, $resource, Config $config)

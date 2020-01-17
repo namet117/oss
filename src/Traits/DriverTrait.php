@@ -72,9 +72,14 @@ trait DriverTrait
      */
     protected function makeAuthorization(array $params)
     {
-        $signature = base64_encode(hash_hmac('sha1', $params['string_to_sign'], $params['config']->get('secret'), true));
+        $signature = base64_encode(hash_hmac(
+            'sha1',
+            $params['string_to_sign'],
+            $params['config']->get('secret_key'),
+            true
+        ));
 
-        return "AWS {$params['config']->get('key_id')}:{$signature}";
+        return "AWS {$params['config']->get('access_key')}:{$signature}";
     }
 
 
@@ -151,12 +156,15 @@ trait DriverTrait
             $request = new Request($params['method'], $params['request_url'], $headers, $body);
 
             $response = $client->send($request);
-            echo "success!! \n";
-            echo $response->getBody(1);
+
+            return $response->getBody(true);
         } catch (RequestException $e) {
-            $response = $e->getResponse();
+            $this->handleRequestException($e);
+            $response = $e->getResponse()->getBody(true);
             echo "failed : \n";
-            echo $response->getBody(1);
+            $body = $response->getBody(true);
+            echo $body;
+            file_put_contents('l1.log', $body);
         }
         exit;
         return $response->getBody();
