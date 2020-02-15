@@ -160,13 +160,22 @@ trait DriverTrait
             return $response->getBody(true);
         } catch (RequestException $e) {
             $this->handleRequestException($e);
-            $response = $e->getResponse()->getBody(true);
+            $response = $e->getResponse();
             echo "failed : \n";
             $body = $response->getBody(true);
-            echo $body;
-            file_put_contents('l1.log', $body);
+            var_dump($body);
         }
         exit;
         return $response->getBody();
+    }
+
+    protected function handleRequestException(RequestException $e)
+    {
+        // 若没有响应，则原样抛出异常
+        if (!$e->hasResponse()) {
+            throw $e;
+        }
+
+
     }
 }
